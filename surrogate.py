@@ -84,6 +84,7 @@ class NeuralGrad:
         """
         if x.shape[0] != 1:
             x = x.reshape(1, x.shape[0])
+
         x_scaled = self.preprocessor.transform(x)
         return(self.network.predict(x_scaled)[0])
     

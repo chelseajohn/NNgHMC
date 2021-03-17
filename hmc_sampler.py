@@ -37,6 +37,9 @@ def hamiltonian(model, sample_size, leapfrog_steps, stepsize, surrogate=None, st
     proposed = 0
     accepted = 0
     total = 0
+    total_count = 0
+    total_acc = 0
+    
 
     for i in range(sample_size):
         proposed_position = current_position
@@ -68,14 +71,17 @@ def hamiltonian(model, sample_size, leapfrog_steps, stepsize, surrogate=None, st
         samples[i, :] = current_position
         energy[i] = current_U
         proposed += 1
+        total_count+=1
 
         if (i + 1) % (sample_size / 10) == 0:
             accepted = accepted * 1.0
             proposed = proposed * 1.0
+            total_acc += accepted
             print('{n} iterations with acceptance probability {prob}'.format(
                 n=i + 1, prob=accepted / proposed))
             accepted = 0
             proposed = 0
+    print("acceptance prob = ",total_acc/total_count)
 
     if save_gradient:
         training = training[0:total, :]
