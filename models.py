@@ -2,7 +2,8 @@ from keras.optimizers import SGD, Adam
 from keras.layers import Dense, Activation, Input, Dropout, merge
 from keras.models import Model, Sequential
 import numpy as np
-from tensorflow.keras import regularizers
+from tensorflow.keras import initializers
+from keras import regularizers
 from keras.regularizers import l1,l2,l1_l2
 
 class GaussianDistribution:
@@ -87,16 +88,14 @@ def exper(input_dim, hidden_dim, output_dim):
     """
 
     x = Input(shape=(input_dim,))
-
     model = Sequential()
-    model.add(Dense(hidden_dim[0], input_dim=input_dim, activation='relu'))
+    model.add(Dense(hidden_dim[0], input_dim=input_dim,  kernel_initializer=initializers.RandomNormal(stddev=0.01),activation='relu'))
     if (len(hidden_dim) != 1):
         for i in range(1, len(hidden_dim)):
-            model.add(Dense(hidden_dim[i], activation='relu',kernel_regularizer=regularizers.l1_l2(l1=1e-4, l2=1e-5)))
+            model.add(Dense(hidden_dim[i], activation='relu',kernel_regularizer=regularizers.l1_l2(l1=1e-1, l2=1e-5)))
     model.add(Dense(output_dim, activation='linear'))
     model.summary()
-    model.compile(optimizer=Adam(), loss='mean_squared_error',
-                  metrics=['accuracy'])
+    model.compile(optimizer=Adam(), loss='mean_absolute_error',metrics=['accuracy'])
     #model.compile(optimizer=SGD(lr=0.01), loss='mean_squared_error',metrics=['accuracy'])
 
     return(model)
